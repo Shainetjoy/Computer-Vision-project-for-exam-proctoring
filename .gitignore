@@ -17,6 +17,10 @@ logs/
 *.jpg
 *.png
 
+# YOLO model files (downloaded automatically)
+*.pt
+yolov8*.pt
+
 # IDE
 .vscode/
 .idea/
