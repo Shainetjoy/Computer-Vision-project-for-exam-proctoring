@@ -1,15 +1,16 @@
 # Real-time AI-based Exam Monitoring System
 
-A Python-based system that monitors student attention during exams using computer vision and AI. It detects face direction and eye gaze to identify when a student is looking away from the screen.
+A Python-based system that monitors student attention during exams using computer vision and AI. It detects face direction, eye gaze, and mobile phones to identify when a student is looking away from the screen or using unauthorized devices.
 
 ## Features
 
 - **Real-time Face Direction Detection**: Detects if the student's face is turned left, right, or centered
 - **Eye Gaze Detection**: Monitors eye movement direction (left, right, or center)
-- **Warning System**: Triggers a warning if the student looks away for more than 15 seconds
+- **Mobile Phone Detection**: Detects mobile phones in real-time using YOLO object detection
+- **Warning System**: Triggers a warning if the student looks away for more than 15 seconds OR if a phone is detected
 - **Visual Feedback**: Displays real-time status with color-coded indicators
 - **Logging**: Automatically logs warning events with timestamps
-- **Screenshot Capture**: Saves screenshots when warnings are triggered
+- **Screenshot Capture**: Saves screenshots when warnings are triggered (including phone detection)
 - **Audio Alert**: Plays a beep sound when warning is activated (Windows)
 
 ## Requirements
@@ -59,6 +60,9 @@ If you don't have Python installed:
    - `mediapipe` - For face mesh detection
    - `numpy` - For numerical operations
    - `protobuf<5.0.0` - Required for MediaPipe compatibility
+   - `ultralytics` - For YOLO-based mobile phone detection
+   
+   **Note:** On first run, YOLOv8 model will be automatically downloaded (~6MB).
 
 ### Step 4: Verify Installation
 
@@ -93,18 +97,24 @@ python -c "import cv2; import mediapipe as mp; import numpy; print('MediaPipe ve
 The screen shows:
 - **Face Direction**: LEFT / RIGHT / CENTER (green when centered, orange when away)
 - **Eye Direction**: LEFT / RIGHT / CENTER (green when centered, orange when away)
+- **Phone Status**: DETECTED / NOT DETECTED (red when detected, green when not)
 - **Timer**: Shows elapsed time since looking away (0.0s / 15.0s)
 - **Warning Status**: Displays "WARNING ACTIVE" when threshold is exceeded
+- **Phone Bounding Boxes**: Red boxes around detected phones with confidence scores
 
 ### Warning System
 
-- **Warning Trigger**: Activates when face OR eyes are looking away for **15 seconds continuously**
-- **Visual Warning**: 
+- **Warning Triggers**: 
+  - Face OR eyes looking away for **15 seconds continuously**
+  - **Mobile phone detected** (immediate warning, no delay)
+- **Visual Warnings**: 
   - Red border around the frame
-  - "WARNING: LOOKING AWAY" text at the top
-- **Audio Warning**: Beep sound plays when warning activates
+  - "WARNING: LOOKING AWAY" text (if looking away)
+  - "WARNING: MOBILE PHONE DETECTED" text (if phone detected)
+  - Red bounding boxes around detected phones
+- **Audio Warning**: Beep sound plays when warning activates (higher pitch for phone detection)
 - **Automatic Actions**:
-  - Screenshot saved to `logs/` folder
+  - Screenshot saved to `logs/` folder (with `phone_` prefix for phone detections)
   - Warning logged to `logs/warnings.log`
   - Console message printed
 
